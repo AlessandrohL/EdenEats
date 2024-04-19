@@ -4,6 +4,7 @@ using AutoFixture.NUnit3;
 using AutoMapper;
 using EdenEats.Application.Contracts.Auth;
 using EdenEats.Application.Contracts.Email;
+using EdenEats.Application.Contracts.Utilities;
 using EdenEats.Application.DTOs.Auth;
 using EdenEats.Application.DTOs.Identity;
 using EdenEats.Application.Exceptions.User;
@@ -29,6 +30,7 @@ namespace EdenEats.Application.UnitTests.Services
         private readonly Mock<IUnitOfWork> _mockUnitOfWork;
         private readonly Mock<IEmailService> _mockEmailService;
         private readonly Mock<IMapper> _mockMapper;
+        private readonly Mock<IUrlUtility> _mockUrlUtility;
         private readonly IFixture _fixture;
         private readonly AuthenticationService _authService;
         private Mock<IDbTransaction> _mockDbTransaction;
@@ -41,12 +43,14 @@ namespace EdenEats.Application.UnitTests.Services
             _mockEmailService = new Mock<IEmailService>();
             _mockMapper = new Mock<IMapper>();
             _fixture = new Fixture();
+            _mockUrlUtility = new Mock<IUrlUtility>();
             _authService = new AuthenticationService(
                 _mockCustomerRepository.Object,
                 _mockIdentityService.Object,
                 _mockUnitOfWork.Object,
                 _mockMapper.Object,
-                _mockEmailService.Object);
+                _mockEmailService.Object,
+                _mockUrlUtility.Object);
             _mockDbTransaction = new Mock<IDbTransaction>();
 
             _fixture.Behaviors.OfType<ThrowingRecursionBehavior>().ToList()
@@ -184,6 +188,72 @@ namespace EdenEats.Application.UnitTests.Services
                 async () => await _authService.RegisterUserAsync(userRegistration, default));
 
             _mockDbTransaction.Verify(p => p.Rollback(), Times.Once);
+        }
+
+        [Test]
+        public void ConfirmUserEmailAsync_WhenEmailConfirmationIsSuccessful_ShouldNotThrowAnyException()
+        {
+            var identityId = _fixture.Create<Guid>();
+            var confirmationRequest = _fixture.Build<EmailConfirmationDTO>()
+                .With(p => p.Id, identityId.ToString())
+                .Create();
+
+            _mockIdentityService
+                .Setup(p => p.IsUserExistsAsync(identityId, default))
+                .ReturnsAsync(true);
+
+            _mockIdentityService
+                .Setup(p => p.IsUserEmailConfirmedAsync(identityId, default))
+                .ReturnsAsync(false);
+
+            var fakeCode = _fixture.Create<string>();
+
+            _mockUrlUtility
+                .Setup(p => p.DecodeBase64Url(confirmationRequest.Code))
+                .Returns(fakeCode);
+
+            _mockIdentityService
+                .Setup(p => p.ConfirmEmailAsync(identityId, fakeCode))
+                .ReturnsAsync(Result.Success());
+
+            Assert.DoesNotThrowAsync(
+                async () => await _authService.ConfirmUserEmailAsync(confirmationRequest, default));
+        }
+
+        [Test]
+        public void ConfirmUserEmailAsync_WhenUserDoesNotExist_ShouldThrowUserNotFoundException()
+        {
+            var identityId = _fixture.Create<Guid>();
+            var confirmationRequest = _fixture.Build<EmailConfirmationDTO>()
+                .With(p => p.Id, identityId.ToString())
+                .Create();
+
+            _mockIdentityService
+                .Setup(p => p.IsUserExistsAsync(identityId, default))
+                .ReturnsAsync(false);
+
+            Assert.ThrowsAsync<UserNotFoundException>(
+                async () => await _authService.ConfirmUserEmailAsync(confirmationRequest, default));
+        }
+
+        [Test]
+        public void ConfirmUserEmailAsync_WhenUserEmailIsAlreadyConfirmed_ShouldThrowUserAlreadyConfirmedException()
+        {
+            var identityId = _fixture.Create<Guid>();
+            var confirmationRequest = _fixture.Build<EmailConfirmationDTO>()
+                .With(p => p.Id, identityId.ToString())
+                .Create();
+
+            _mockIdentityService
+                .Setup(p => p.IsUserExistsAsync(identityId, default))
+                .ReturnsAsync(true);
+
+            _mockIdentityService
+                .Setup(p => p.IsUserEmailConfirmedAsync(identityId, default))
+                .ReturnsAsync(true);
+
+            Assert.ThrowsAsync<UserAlreadyConfirmedException>(
+                async () => await _authService.ConfirmUserEmailAsync(confirmationRequest, default));
         }
     }
 }
