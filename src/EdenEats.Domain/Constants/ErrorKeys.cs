@@ -9,5 +9,6 @@ namespace EdenEats.Domain.Constants
     public static class ErrorKeys
     {
         public const string User = "User";
+        public const string Email = "Email";
     }
 }

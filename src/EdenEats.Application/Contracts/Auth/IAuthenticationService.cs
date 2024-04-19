@@ -18,7 +18,7 @@ namespace EdenEats.Application.Contracts.Auth
             CancellationToken cancellationToken);
         Task LogoutAsync(string accessToken, CancellationToken cancellationToken);
         Task ConfirmUserEmailAsync(
-            EmailConfirmationDto confirmationRequest,
+            EmailConfirmationDTO confirmationRequest,
             CancellationToken cancellationToken);
         Task RefreshAccessTokenAsync(
             string accessToken,

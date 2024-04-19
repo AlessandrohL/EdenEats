@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace EdenEats.Application.DTOs.Auth
 {
-    public record EmailConfirmationDto();
+    public record EmailConfirmationDTO(string Id, string Code);
 }

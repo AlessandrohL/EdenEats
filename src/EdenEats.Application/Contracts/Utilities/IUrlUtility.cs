@@ -8,7 +8,7 @@ namespace EdenEats.Application.Contracts.Utilities
 {
     public interface IUrlUtility
     {
-        byte[] EncodeUrlToBase64(string token);
-        byte[] DecodeBase64Url(string base64token);
+        string EncodeUrlToBase64(string token);
+        string DecodeBase64Url(string base64token);
     }
 }

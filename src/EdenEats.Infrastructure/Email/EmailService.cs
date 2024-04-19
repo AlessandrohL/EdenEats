@@ -15,16 +15,13 @@ namespace EdenEats.Infrastructure.Email
     {
         private readonly IEmailSender _emailSender;
         private readonly ClientConfiguration _clientConfig;
-        private readonly IUrlUtility _urlUtility;
 
         public EmailService(
             IEmailSender emailSender,
-            ClientConfiguration clientConfig,
-            IUrlUtility urlUtility)
+            ClientConfiguration clientConfig)
         {
             _emailSender = emailSender;
             _clientConfig = clientConfig;
-            _urlUtility = urlUtility;
         }
 
         public async Task SendEmailAsync(Message message)
@@ -66,8 +63,7 @@ namespace EdenEats.Infrastructure.Email
         private string GenerateEmailConfirmationUrl(Guid identityId, string confirmationToken)
         {
             var clientConfirmationUrl = $"{_clientConfig.BaseUrl}/{_clientConfig.ConfirmationEndpoint}";
-            var encodedToken = Encoding.UTF8.GetString(_urlUtility.EncodeUrlToBase64(confirmationToken));
-            var confirmationLink = $"{clientConfirmationUrl}?id={identityId}&code={encodedToken}";
+            var confirmationLink = $"{clientConfirmationUrl}?id={identityId}&code={confirmationToken}";
 
             return confirmationLink;
         }

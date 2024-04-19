@@ -1,5 +1,5 @@
 ﻿using EdenEats.Application.Contracts.Utilities;
-using NeoSmart.Utils;
+using Microsoft.AspNetCore.WebUtilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,23 +11,26 @@ namespace EdenEats.Infrastructure.Utilities
 {
     public sealed class UrlUtility : IUrlUtility
     {
-        public byte[] DecodeBase64Url(string base64Url)
+        public const string Base64UrlRegex = @"^([0-9a-zA-Z_\-]{4})*([0-9a-zA-Z_\-]{2})?$";
+
+        public string DecodeBase64Url(string base64Url)
         {
-            var decoded = UrlBase64.Decode(base64Url);
-            return decoded;
+            var bytes = WebEncoders.Base64UrlDecode(base64Url);
+            var decodedToken = Encoding.UTF8.GetString(bytes);
+
+            return decodedToken;
         }
 
-        public byte[] EncodeUrlToBase64(string token)
+        public string EncodeUrlToBase64(string token)
         {
             var bytes = Encoding.UTF8.GetBytes(token);
-            var encoded = UrlBase64.EncodeUtf8(bytes, PaddingPolicy.Discard);
+            var encoded = WebEncoders.Base64UrlEncode(bytes);
             return encoded;
         }
 
-        public bool ValidateBase64Url(string base64Url)
+        public static bool ValidateBase64Url(string base64Url)
         {
-            var regex = @"^([0-9a-zA-Z_\-]{4})*([0-9a-zA-Z_\-]{2})?$";
-            return Regex.IsMatch(base64Url, regex);
+            return Regex.IsMatch(base64Url, Base64UrlRegex);
         }
     }
 }

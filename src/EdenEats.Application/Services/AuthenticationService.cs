@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using EdenEats.Application.Contracts.Auth;
 using EdenEats.Application.Contracts.Email;
+using EdenEats.Application.Contracts.Utilities;
 using EdenEats.Application.DTOs.Auth;
 using EdenEats.Application.DTOs.Identity;
+using EdenEats.Application.Exceptions.Email;
 using EdenEats.Application.Exceptions.User;
 using EdenEats.Domain.Contracts.Entities;
 using EdenEats.Domain.Contracts.Repositories;
@@ -23,19 +25,22 @@ namespace EdenEats.Application.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly IEmailService _emailService;
+        private readonly IUrlUtility _urlUtility;
 
         public AuthenticationService(
            ICustomerRepository customerRepository,
            IIdentityService identityService,
            IUnitOfWork unitOfWork,
            IMapper mapper,
-           IEmailService emailService)
+           IEmailService emailService,
+           IUrlUtility urlUtility)
         {
             _customerRepository = customerRepository;
             _identityService = identityService;
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _emailService = emailService;
+            _urlUtility = urlUtility;
         }
 
         public async Task RegisterUserAsync(UserRegistrationDTO registrationRequest, CancellationToken cancellationToken)
@@ -77,10 +82,11 @@ namespace EdenEats.Application.Services
             }
 
             var confirmationToken = await _identityService.GenerateEmailConfirmationTokenAsync(userIdentity);
+            var encodedToken = _urlUtility.EncodeUrlToBase64(confirmationToken);
 
             await _emailService.SendEmailConfirmationAsync(
                 userIdentity: userIdentity,
-                confirmationToken: confirmationToken,
+                confirmationToken: encodedToken,
                 names: registrationRequest.FirstName);
         }
 
@@ -89,9 +95,28 @@ namespace EdenEats.Application.Services
             throw new NotImplementedException();
         }
 
-        public Task ConfirmUserEmailAsync(EmailConfirmationDto confirmationRequest, CancellationToken cancellationToken)
+        public async Task ConfirmUserEmailAsync(EmailConfirmationDTO confirmationRequest, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            var identityId = Guid.Parse(confirmationRequest.Id);
+
+            if (!await _identityService.IsUserExistsAsync(identityId, cancellationToken))
+            {
+                throw new UserNotFoundException();
+            }
+
+            if (await _identityService.IsUserEmailConfirmedAsync(identityId, cancellationToken))
+            {
+                throw new UserAlreadyConfirmedException();
+            }
+
+            var decodedToken = _urlUtility.DecodeBase64Url(confirmationRequest.Code);
+
+            var confirmationResult = await _identityService.ConfirmEmailAsync(identityId, decodedToken);
+
+            if (confirmationResult.IsFailure)
+            {
+                throw new EmailConfirmationFailedException(confirmationResult.Errors!);
+            }
         }
 
         public string CreateRefreshToken()
@@ -118,7 +143,5 @@ namespace EdenEats.Application.Services
         {
             throw new NotImplementedException();
         }
-
-
     }
 }
