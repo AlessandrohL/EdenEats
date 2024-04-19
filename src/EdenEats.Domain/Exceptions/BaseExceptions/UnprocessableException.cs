@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace EdenEats.Domain.Exceptions.BaseExceptions
 {
-    public abstract class UnprocessableException : Exception
+    public abstract class UnprocessableException : Exception, IExceptionBase
     {
         public Dictionary<string, IEnumerable<string>> Errors { get; init; }
 

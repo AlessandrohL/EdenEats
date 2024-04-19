@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace EdenEats.Domain.Exceptions.BaseExceptions
 {
-    public abstract class BadRequestException : Exception, IExceptionBase
+    public abstract class ConflictException : Exception, IExceptionBase
     {
         public Dictionary<string, IEnumerable<string>> Errors { get; init; }
 
-        public BadRequestException(string key, IEnumerable<string> errors)
+        public ConflictException(string key, IEnumerable<string> errors) 
             : base()
         {
             Errors = new() { { key, errors } };
