@@ -1,6 +1,4 @@
 ﻿using EdenEats.Application.Contracts.Email;
-using EdenEats.Application.Contracts.Utilities;
-using EdenEats.Application.DTOs.Identity;
 using EdenEats.Application.Email;
 using EdenEats.Infrastructure.Client;
 using System;
@@ -27,22 +25,22 @@ namespace EdenEats.Infrastructure.Email
         public async Task SendEmailAsync(Message message)
             => await _emailSender.SendEmailAsync(message);
 
-        public async Task SendEmailConfirmationAsync(UserIdentityDTO userIdentity, string confirmationToken, string names)
+        public async Task SendEmailConfirmationAsync(EmailConfirmationInfo confirmationInfo)
         {
-            if (userIdentity == null)
+            if (confirmationInfo == null)
             {
-                throw new ArgumentNullException(nameof(userIdentity));
+                throw new ArgumentNullException(nameof(confirmationInfo));
             }
 
-            if (string.IsNullOrEmpty(confirmationToken))
+            if (string.IsNullOrEmpty(confirmationInfo.ConfirmationToken))
             {
-                throw new ArgumentException($"{nameof(confirmationToken)} cannot be null or empty.");
+                throw new ArgumentException($"{nameof(confirmationInfo.ConfirmationToken)} cannot be null or empty.");
             }
 
-            var confirmationUrl = GenerateEmailConfirmationUrl(userIdentity.Id, confirmationToken);
-            var body = CreateEmailConfirmationTemplate(names, confirmationUrl);
+            var confirmationUrl = GenerateEmailConfirmationUrl(confirmationInfo.UserId, confirmationInfo.ConfirmationToken);
+            var body = CreateEmailConfirmationTemplate(confirmationInfo.Names, confirmationUrl);
             var emailConfirmationMessage = new Message(
-                to: new string[1] { userIdentity.Email },
+                to: new string[1] { confirmationInfo.Email },
                 subject: EmailConstants.SubjectConfirmationEmail,
                 content: body);
 

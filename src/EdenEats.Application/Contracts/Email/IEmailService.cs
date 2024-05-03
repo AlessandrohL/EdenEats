@@ -10,7 +10,7 @@ namespace EdenEats.Application.Contracts.Email
 {
     public interface IEmailService
     {
-        Task SendEmailConfirmationAsync(UserIdentityDTO userIdentity, string confirmationToken, string names);
+        Task SendEmailConfirmationAsync(EmailConfirmationInfo confirmationInfo);
         Task SendEmailAsync(Message message);
     }
 }
