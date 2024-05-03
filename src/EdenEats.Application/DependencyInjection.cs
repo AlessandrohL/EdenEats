@@ -1,6 +1,4 @@
-﻿using EdenEats.Application.Contracts.Auth;
-using EdenEats.Application.Services;
-using FluentValidation;
+﻿using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -17,8 +15,6 @@ namespace EdenEats.Application
         {
             services.AddValidatorsFromAssembly(Assembly.GetAssembly(typeof(DependencyInjection)));
             ValidatorOptions.Global.LanguageManager.Enabled = false;
-
-            services.AddScoped<IAuthenticationService, AuthenticationService>();
 
             return services;
         }
