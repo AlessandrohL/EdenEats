@@ -35,8 +35,5 @@ namespace EdenEats.Infrastructure.Jwt
         public double GetRefreshTokenValidityDays()
             => Convert.ToDouble(_config["JwtSettings:RefreshTokenLifetimeDays"]);
 
-        public string? GetCookieName() => _config["JwtSettings:CookieName"];
-        public double GetCookieExpirationDays()
-            => Convert.ToDouble(_config["JwtSettings:CookieLifetimeDays"]);
     }
 }

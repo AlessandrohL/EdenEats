@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace EdenEats.Application.DTOs.Auth
 {
-    public record RefreshTokenDTO();
+    public record RefreshTokenDTO(string RefreshToken);
 }

@@ -1,6 +1,7 @@
 using EdenEats.Infrastructure;
 using EdenEats.Application;
 using EdenEats.WebApi.Middlewares;
+using EdenEats.WebApi.ActionFilters;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,7 +12,12 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddInfrastructure(builder.Configuration);
+
 builder.Services.AddApplication();
+
+builder.Services.AddAuthorization();
+
+builder.Services.AddScoped<ValidateCsrfTokenFilter>();
 
 var app = builder.Build();
 
@@ -27,6 +33,8 @@ if (app.Environment.IsProduction())
 }
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

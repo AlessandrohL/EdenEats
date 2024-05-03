@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace EdenEats.Application.DTOs.Auth
 {
-    public record SignInRequestDTO();
+    public record SignInRequestDTO(string Email, string Password);
 }

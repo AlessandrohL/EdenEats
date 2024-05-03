@@ -25,7 +25,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<Folder Include="Authentication\DTOs\" />
 		<Folder Include="Data\Migrations\" />
+		<Folder Include="Identity\Services\" />
 	</ItemGroup>
 
 </Project>

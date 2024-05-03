@@ -10,5 +10,6 @@ namespace EdenEats.Domain.Constants
     {
         public const string User = "User";
         public const string Email = "Email";
+        public const string Auth = "Auth";
     }
 }

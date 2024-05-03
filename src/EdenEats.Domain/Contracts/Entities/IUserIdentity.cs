@@ -14,5 +14,8 @@ namespace EdenEats.Domain.Contracts.Entities
         string UserName { get; set; }
         string Email { get; set; }
         string PasswordHash { get; set; }
+
+        void SetRefreshToken(string refreshToken, DateTime expiryTime);
+        void RemoveRefreshToken();
     }
 }

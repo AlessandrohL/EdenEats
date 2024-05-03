@@ -12,5 +12,17 @@ namespace EdenEats.Infrastructure.Identity
     {
         public string? RefreshToken { get; set; }
         public DateTime? RefreshTokenExpiryTime { get; set; }
+
+        public void SetRefreshToken(string refreshToken, DateTime expiryTime)
+        {
+            RefreshToken = refreshToken;
+            RefreshTokenExpiryTime = expiryTime;
+        }
+
+        public void RemoveRefreshToken()
+        {
+            RefreshToken = null;
+            RefreshTokenExpiryTime = null;
+        }
     }
 }

@@ -41,7 +41,7 @@ namespace EdenEats.WebApi.Middlewares
                 ValidationException e => e.Errors,
                 UnauthorizedException e => e.Errors,
                 UnprocessableException e => e.Errors,
-                ConflictException e => e.Errors
+                ConflictException e => e.Errors,
                 _ => new()
                 {
                     { "Server", new string[1] { "Internal Server Error" } }
