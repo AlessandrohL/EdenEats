@@ -10,13 +10,14 @@ namespace EdenEats.Infrastructure.Exceptions.Jwt
 {
     public sealed class InvalidAccessTokenException : UnauthorizedException
     {
-        public InvalidAccessTokenException(IEnumerable<string> errors) 
-            : base(ErrorKeys.Auth, errors)
-        { 
-        }
+        public const string DefaultMessage = "The access token has not been provided or is invalid.";
+
+        public InvalidAccessTokenException(string error) 
+            : base(ErrorKeys.Auth, error)
+        { }
 
         public InvalidAccessTokenException()
-            : this(new string[1] { "The access token has not been provided or is invalid." })
+            : this(DefaultMessage)
         { }
     }
 }

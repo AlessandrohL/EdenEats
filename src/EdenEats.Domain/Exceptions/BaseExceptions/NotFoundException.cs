@@ -8,12 +8,11 @@ namespace EdenEats.Domain.Exceptions.BaseExceptions
 {
     public abstract class NotFoundException : Exception, IExceptionBase
     {
-        public Dictionary<string, IEnumerable<string>> Errors { get; init; }
-
-        public NotFoundException(string key, IEnumerable<string> errors)
-            : base(errors.FirstOrDefault())
+        public string TypeError { get; init; } = null!;
+        public NotFoundException(string typeError, string error)
+            : base(error)
         {
-            Errors = new() { { key, errors } };
+            TypeError = typeError;
         }
     }
 }

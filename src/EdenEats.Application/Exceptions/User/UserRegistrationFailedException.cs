@@ -11,7 +11,7 @@ namespace EdenEats.Application.Exceptions.User
     public class UserRegistrationFailedException : UnprocessableException
     {
         public UserRegistrationFailedException(IEnumerable<string> errors)
-            : base(ErrorKeys.User, errors)
+            : base(ErrorKeys.User, string.Join(',', errors))
         { }
     }
 }

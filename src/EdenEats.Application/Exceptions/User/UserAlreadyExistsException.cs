@@ -12,16 +12,8 @@ namespace EdenEats.Application.Exceptions.User
     {
         public const string DefaultMessage = "The email address is already in use. Please choose a different email address.";
 
-        public UserAlreadyExistsException(IEnumerable<string> errors)
-            : base(ErrorKeys.User, errors)
-        { }
-
-        public UserAlreadyExistsException(string error)
-            : this(new string[1] { error })
-        { }
-
         public UserAlreadyExistsException()
-            : this(new string[1] { DefaultMessage })
+            : base(ErrorKeys.User, DefaultMessage)
         { }
     }
 }

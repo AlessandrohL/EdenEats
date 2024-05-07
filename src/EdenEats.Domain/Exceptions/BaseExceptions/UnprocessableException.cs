@@ -8,12 +8,11 @@ namespace EdenEats.Domain.Exceptions.BaseExceptions
 {
     public abstract class UnprocessableException : Exception, IExceptionBase
     {
-        public Dictionary<string, IEnumerable<string>> Errors { get; init; }
-
-        public UnprocessableException(string key, IEnumerable<string> errors)
-            : base(errors.FirstOrDefault())
-        {
-            Errors = new() { { key, errors } };
+        public string TypeError { get; init; } = null!; 
+        public UnprocessableException(string typeError, string error) 
+            : base(error) 
+        { 
+            TypeError = typeError; 
         }
     }
 }

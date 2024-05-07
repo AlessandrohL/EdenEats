@@ -23,16 +23,9 @@ namespace EdenEats.WebApi.ActionFilters
 
             if (!hasHeaderCsrf || string.IsNullOrWhiteSpace(headerCsrfToken))
             {
-                var statusCode = StatusCodes.Status403Forbidden;
-                httpContext.Response.StatusCode = statusCode;
-                var errorResponse = new ErrorResponse(
-                    HttpStatusHelper.GetTitleByStatusCode(statusCode),
-                    new()
-                    {
-                        { ErrorKeys.Auth, new string[1] { "CSRF token is missing or empty." } }
-                    },
-                    statusCode);
+                httpContext.Response.StatusCode = StatusCodes.Status403Forbidden;
 
+                var errorResponse = ErrorResponse.Forbidden(ErrorKeys.Auth, "CSRF token is missing or empty.");
                 await httpContext.Response.WriteAsJsonAsync(errorResponse);
                 return;
             }
@@ -43,7 +36,9 @@ namespace EdenEats.WebApi.ActionFilters
             if (!jwtCsrfToken!.Equals(headerCsrfToken))
             {
                 httpContext.Response.StatusCode = StatusCodes.Status403Forbidden;
-                await httpContext.Response.WriteAsync("CSRF is invalid!");
+
+                var errorResponse = ErrorResponse.Forbidden(ErrorKeys.Auth, "CSRF token is invalid.");
+                await httpContext.Response.WriteAsJsonAsync(errorResponse);
                 return;
             }
 

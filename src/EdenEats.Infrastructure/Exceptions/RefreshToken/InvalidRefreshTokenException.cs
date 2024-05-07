@@ -10,12 +10,11 @@ namespace EdenEats.Infrastructure.Exceptions.RefreshToken
 {
     public sealed class InvalidRefreshTokenException : UnauthorizedException
     {
-        public InvalidRefreshTokenException(IEnumerable<string> errors) 
-            : base(ErrorKeys.Auth, errors)
+        public const string DefaultMessage = "The refresh token provided is invalid.";
+
+        public InvalidRefreshTokenException() 
+            : base(ErrorKeys.Auth, DefaultMessage)
         { }
 
-        public InvalidRefreshTokenException()
-            : this(new string[1] { "The refresh token provided is invalid." })
-        { }
     }
 }

@@ -12,13 +12,8 @@ namespace EdenEats.Application.Exceptions.User
     {
         public const string DefaultMessage = "The user's email address has not yet been confirmed.";
 
-        public UnconfirmedUserEmailException(IEnumerable<string> errors) 
-            : base(ErrorKeys.User, errors)
-        {
-        }
-
         public UnconfirmedUserEmailException()
-            : this(new string[1] { DefaultMessage })
+            : base(ErrorKeys.User, DefaultMessage)
         { }
     }
 }

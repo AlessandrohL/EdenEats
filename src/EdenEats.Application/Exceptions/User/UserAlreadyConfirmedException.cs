@@ -13,7 +13,7 @@ namespace EdenEats.Application.Exceptions.User
         private const string DefaultMessage = "This user has already been confirmed.";
 
         public UserAlreadyConfirmedException()
-            : base(ErrorKeys.User, new string[1] { DefaultMessage })
+            : base(ErrorKeys.User, DefaultMessage)
         { }
     }
 }

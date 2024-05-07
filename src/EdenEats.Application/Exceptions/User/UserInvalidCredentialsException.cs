@@ -12,13 +12,8 @@ namespace EdenEats.Application.Exceptions.User
     {
         public const string DefaultMessage = "Invalid email or password. Please check your credentials and try again.";
        
-        public UserInvalidCredentialsException(IEnumerable<string> errors) 
-            : base(ErrorKeys.User, errors)
-        {
-        }
-
         public UserInvalidCredentialsException() 
-            : this(new string[1] { DefaultMessage })
+            : base(ErrorKeys.User, DefaultMessage)
         { }
     }
 }

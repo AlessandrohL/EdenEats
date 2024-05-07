@@ -8,12 +8,11 @@ namespace EdenEats.Domain.Exceptions.BaseExceptions
 {
     public abstract class UnauthorizedException : Exception, IExceptionBase
     {
-        public Dictionary<string, IEnumerable<string>> Errors { get; init; }
-
-        public UnauthorizedException(string key, IEnumerable<string> errors)
-            : base(errors.FirstOrDefault())
-        {
-            Errors = new() { { key, errors } };
+        public string TypeError { get; init; } = null!; 
+        public UnauthorizedException(string typeError, string error) 
+            : base(error) 
+        { 
+            TypeError = typeError; 
         }
     }
 }

@@ -8,6 +8,6 @@ namespace EdenEats.Domain.Exceptions
 {
     public interface IExceptionBase
     {
-        Dictionary<string, IEnumerable<string>> Errors { get; init; }
+        string TypeError { get; init; }
     }
 }

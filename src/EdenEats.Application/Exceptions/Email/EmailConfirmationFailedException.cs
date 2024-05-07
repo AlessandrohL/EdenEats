@@ -12,13 +12,12 @@ namespace EdenEats.Application.Exceptions.Email
     {
         public const string DefaultMessage = "The user's e-mail address could not be confirmed.";
 
-        public EmailConfirmationFailedException(IEnumerable<string> errors)
-            : base(ErrorKeys.Email, errors)
+        public EmailConfirmationFailedException(string error)
+            : base(ErrorKeys.Email, error)
         { }
 
-        public EmailConfirmationFailedException() 
-            : this(new string[1] { DefaultMessage })
+        public EmailConfirmationFailedException()
+            : this(DefaultMessage)
         { }
-
     }
 }

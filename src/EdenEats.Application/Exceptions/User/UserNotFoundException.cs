@@ -12,8 +12,8 @@ namespace EdenEats.Application.Exceptions.User
     {
         private const string DefaultMessage = "User not found.";
 
-        public UserNotFoundException() : 
-            base(ErrorKeys.User, new string[1] { DefaultMessage })
+        public UserNotFoundException() 
+            : base(ErrorKeys.User, DefaultMessage)
         { }
     }
 }

@@ -8,12 +8,11 @@ namespace EdenEats.Domain.Exceptions.BaseExceptions
 {
     public abstract class ConflictException : Exception, IExceptionBase
     {
-        public Dictionary<string, IEnumerable<string>> Errors { get; init; }
-
-        public ConflictException(string key, IEnumerable<string> errors) 
-            : base()
+        public string TypeError { get; init; } = null!;
+        public ConflictException(string typeError, string error)
+            : base(error)
         {
-            Errors = new() { { key, errors } };
+            TypeError = typeError;
         }
     }
 }

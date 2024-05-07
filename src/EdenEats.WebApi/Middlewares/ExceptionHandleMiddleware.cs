@@ -22,43 +22,24 @@ namespace EdenEats.WebApi.Middlewares
             }
             catch (Exception ex)
             {
-                var errors = GetErrorsFromException(ex);
-                var statusCode = GetStatusCodeToException(ex);
-                var title = HttpStatusHelper.GetTitleByStatusCode(statusCode);
-                var errorResponse = new ErrorResponse(title, errors, statusCode);
+                var errorResponse = CreateErrorResponseFromException(ex);
 
-                context.Response.StatusCode = statusCode;
+                context.Response.StatusCode = errorResponse.Status;
                 await context.Response.WriteAsJsonAsync(errorResponse);
             }
         }
 
-        private static Dictionary<string, IEnumerable<string>> GetErrorsFromException(Exception ex)
+        private static ErrorResponse CreateErrorResponseFromException(Exception ex)
         {
             return ex switch
             {
-                BadRequestException e => e.Errors,
-                NotFoundException e => e.Errors,
-                ValidationException e => e.Errors,
-                UnauthorizedException e => e.Errors,
-                UnprocessableException e => e.Errors,
-                ConflictException e => e.Errors,
-                _ => new()
-                {
-                    { "Server", new string[1] { "Internal Server Error" } }
-                }
-            };
-        }
-
-        private static int GetStatusCodeToException(Exception ex)
-        {
-            return ex switch
-            {
-                BadRequestException => StatusCodes.Status400BadRequest,
-                NotFoundException => StatusCodes.Status404NotFound,
-                ValidationException => StatusCodes.Status400BadRequest,
-                UnauthorizedException => StatusCodes.Status401Unauthorized,
-                UnprocessableException => StatusCodes.Status422UnprocessableEntity,
-                _ => StatusCodes.Status500InternalServerError
+                BadRequestException e => ErrorResponse.BadRequest(e.TypeError, e.Message),
+                NotFoundException e => ErrorResponse.NotFound(e.TypeError, e.Message),
+                ValidationException e => ErrorResponse.BadRequest(e.TypeError, e.Message),
+                UnauthorizedException e => ErrorResponse.Unauthorized(e.TypeError, e.Message),
+                UnprocessableException e => ErrorResponse.UnprocessableEntity(e.TypeError, e.Message),
+                ConflictException e => ErrorResponse.Conflict(e.TypeError, e.Message),
+                _ => ErrorResponse.ServerError()
             };
         }
     }

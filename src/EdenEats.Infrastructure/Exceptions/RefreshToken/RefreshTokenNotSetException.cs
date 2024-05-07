@@ -10,12 +10,11 @@ namespace EdenEats.Infrastructure.Exceptions.RefreshToken
 {
     public sealed class RefreshTokenNotSetException : UnprocessableException
     {
-        public RefreshTokenNotSetException(IEnumerable<string> errors) 
-            : base(ErrorKeys.Auth, errors)
+        public const string DefaultMessage = "The refresh token has expired. Please log in again to obtain a new token.";
+
+        public RefreshTokenNotSetException() 
+            : base(ErrorKeys.Auth, DefaultMessage)
         { }
 
-        public RefreshTokenNotSetException()
-            : this(new string[1] { "User does not have a refresh token set." })
-        { }
     }
 }
